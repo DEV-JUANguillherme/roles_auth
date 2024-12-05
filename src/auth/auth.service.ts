@@ -2,9 +2,11 @@ import {
     BadRequestException, 
     Injectable, 
     UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 // _ scrypt pois ele trabalha com o padrão de cryptografia mas com callback no final
 import {randomBytes, scrypt as _scrypt} from 'crypto'
+
 
 // vamos tranformar em uma funçãoa async importando 
 import { promisify } from 'util';
@@ -16,6 +18,7 @@ const scrypt = promisify(_scrypt);
 const users = []
 @Injectable()
 export class AuthService {
+    constructor(private readonly jwtService: JwtService) {}
   // metodo de cadastro 
   async singUp(email: string, password: string){
     const existignUser = users.find(user => user.email === email);
@@ -67,7 +70,11 @@ export class AuthService {
     }
 
     console.log('sign in', user)
-    const {password: _, ...result} = user;
-    return result;
+    // aqui vamos preparar para eles nos retornar o usuario
+    //sub vai ser o ID do usuario
+    const payload = {username : user.email, sub: user.id}
+
+    // ele transforma esse payload (objeto acima) e transformar em um token JWT
+    return {accessToken: this.jwtService.sign(payload)}
   }
 }
