@@ -59,6 +59,11 @@ export class AuthService {
 
     // pegando a senha
     const {salt, storedHash} = user.password.split('.');
+
+     // Verifique se salt e storedHash estão definidos
+     if (!salt || !storedHash) {
+      throw new UnauthorizedException('invalid credentials');
+  }
     // há sacada é - eu sei qual é salt unico desse user, se eu criptogradar novamente a mesma senha
     // eu tenho que chegar no mesmo resultado que esta no banco
     const hash = (await scrypt(password, salt, 32)) as Buffer
