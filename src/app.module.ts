@@ -6,7 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 import { FeatureModule } from './feature/feature.module';
 
 @Module({
-  imports: [AuthModule, ConfigModule.forRoot({isGlobal: true}), FeatureModule], // deixar o configmodule como global para toda a aplicação
+  imports: [AuthModule, 
+    ConfigModule.forRoot({isGlobal: true}), 
+    FeatureModule], // deixar o configmodule como global para toda a aplicação
   controllers: [AppController],
   providers: [AppService],
 })
